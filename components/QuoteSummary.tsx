@@ -5,6 +5,8 @@ import { Material } from '../types';
 interface QuoteSummaryProps {
   totalMaterialCost: number;
   totalLaborCost: number;
+  vehicleCost: number;
+  setVehicleCost: (cost: number) => void;
   subtotal: number;
   profitMargin: number;
   setProfitMargin: (margin: number) => void;
@@ -23,6 +25,8 @@ const SummaryRow: React.FC<{ label: string; value: string; isTotal?: boolean }> 
 const QuoteSummary: React.FC<QuoteSummaryProps> = ({
   totalMaterialCost,
   totalLaborCost,
+  vehicleCost,
+  setVehicleCost,
   subtotal,
   profitMargin,
   setProfitMargin,
@@ -40,6 +44,21 @@ const QuoteSummary: React.FC<QuoteSummaryProps> = ({
         <div className="print:hidden">
             <SummaryRow label="รวมค่าอุปกรณ์" value={`${formatCurrency(totalMaterialCost)} บาท`} />
             <SummaryRow label="รวมค่าแรง" value={`${formatCurrency(totalLaborCost)} บาท`} />
+            <div className="flex justify-between items-center py-2">
+                <label htmlFor="vehicle-cost" className="text-slate-600">ค่ารถยนต์ปฏิบัติงาน</label>
+                <div className="relative w-32">
+                    <input
+                        id="vehicle-cost"
+                        type="number"
+                        value={vehicleCost || ''}
+                        onChange={(e) => setVehicleCost(parseInt(e.target.value, 10) || 0)}
+                        className="w-full p-1 text-right border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                        placeholder="0"
+                        min="0"
+                    />
+                    <span className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400">บาท</span>
+                </div>
+            </div>
             <SummaryRow label="ราคารวม (ก่อนกำไร)" value={`${formatCurrency(subtotal)} บาท`} />
         </div>
 
@@ -60,6 +79,12 @@ const QuoteSummary: React.FC<QuoteSummaryProps> = ({
                 <span>รวมค่าแรง</span>
                 <span>{formatCurrency(totalLaborCost)}</span>
             </div>
+            {vehicleCost > 0 && (
+              <div className="flex justify-between font-semibold mt-1">
+                  <span>ค่ารถยนต์ปฏิบัติงาน</span>
+                  <span>{formatCurrency(vehicleCost)}</span>
+              </div>
+            )}
         </div>
 
         <div className="flex justify-between items-center py-2 border-t border-slate-200 no-print">
